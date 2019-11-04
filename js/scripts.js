@@ -1,8 +1,6 @@
 var pokemonRepository = (() => {
   var repository = [];
   var apiUrl = "https://pokeapi.co/api/v2/pokemon/?limit=150";
-  var $modalContainer = $('.modal');
-  var $overlay = $(".overlay");
 
   function loadList() {
     return $.ajax(apiUrl, {
@@ -41,9 +39,9 @@ var pokemonRepository = (() => {
   }
 
   function addListItem(pokemon) {
-    var $pokemonList = $("ul");
-    var $listItem = $("<li></li>");
-    var $button = $("<button></button>");
+    var $pokemonList = $("ul.pokemon-list");
+    var $listItem = $("<li class='list-group-item'></li>");
+    var $button = $("<button class='btn btn-primary' data-toggle='modal' data-target='#pokemon-modal'></button>");
 
     $button.text(pokemon.index + ". " + pokemon.name);
     $button.addClass("list-button");
@@ -65,38 +63,11 @@ var pokemonRepository = (() => {
 
     pokemonRepository.loadDetails(item)
       .then(() => {
-        $modalContainer.addClass("modal-visible");
-        $overlay.addClass("overlay-visible");
-        $modalContainer.removeClass("modal");
         $pokemonName.text(item.name);
         $pokemonImg.attr("src", item.imageUrl);
         $pokemonHeight.text(item.height);
       });
   }
-
-  function hideDetails() {
-    $modalContainer.removeClass("modal-visible");
-    $overlay.removeClass("overlay-visible");
-    $modalContainer.addClass("modal");
-  }
-
-  $(".modal-close").on("click", () => {
-    hideDetails();
-  });
-
-  $(window).on('keydown', (e) => {
-    if (e.key === 'Escape' && $modalContainer.hasClass('modal-visible')) {
-      hideDetails();
-    }
-  });
-
-  $overlay.on('click', (e) => {
-    var target = $(e.target);
-
-    if (target.hasClass("overlay")) {
-      hideDetails();
-    }
-  });
 
   function getAll() {
     return repository;
